@@ -2,6 +2,8 @@ export const sendMessage = async (req, res) => {
   try {
     const { message } = req.body;
     const { userId } = req.params;
+    const senderId = req.user._id;
+    console.log(senderId);
     res.status(200).json({ message, userId });
   } catch (error) {
     console.log(`Error in sendMessage controller ${error.message}`);
