@@ -6,9 +6,8 @@ export const sendMessage = async (req, res) => {
   try {
     const { message } = req.body;
     const { userId: recieverId } = req.params;
-    console.log(recieverId);
     const senderId = req.user._id;
-    console.log(senderId);
+
     let conversation = await Conversation.findOne({
       participants: { $all: [senderId, recieverId] },
     });
@@ -29,13 +28,14 @@ export const sendMessage = async (req, res) => {
       // Save the message ID to the conversation
       conversation.messages.push(newMessage._id);
     }
+
     //  instead to run one by one we call promise.all
     // await conversation.save();
     // await newMessage.save();
 
     //run in parallel
-    await Promise.all(conversation.save(), newMessage.save());
-    console.log(newMessage);
+    await Promise.all([conversation.save(), newMessage.save()]);
+
     res.status(201).json(newMessage);
   } catch (error) {
     console.log(`Error in sendMessage controller ${error.message}`);
@@ -52,10 +52,10 @@ export const getMessages = async (req, res) => {
     const conversation = await Conversation.findOne({
       participants: { $all: [senderId, userToChatId] },
     }).populate("messages");
-    if (!conversation)
-      return res.status(404).json({ error: "Conversation not found" });
+    if (!conversation) return res.status(200).json([]);
 
-    res.status(200).json(conversation.messages);
+    const messages = conversation.messages;
+    res.status(200).json(messages);
   } catch (error) {
     console.log(`Error in getMessages controller ${error.message}`);
     res
