@@ -20,7 +20,7 @@ export const Message = ({ message }) => {
         </div>
       </div>
 
-      <div className={`chat-bubble text-white  ${bubbleColor}`}>
+      <div className={`chat-bubble text-white pb-2  ${bubbleColor}`}>
         {message.message}
       </div>
       <div className="items-center text-xs opacity-50 chat-footer">
