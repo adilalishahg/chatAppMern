@@ -36,6 +36,14 @@ export const sendMessage = async (req, res) => {
     //run in parallel
     await Promise.all([conversation.save(), newMessage.save()]);
 
+    //Socket IO fulctionality
+
+    const recieveSocketId = getRecieverSocketId(recieverId);
+    if (recieveSocketId) {
+      //io.to(socket.id).emit("getMessage", newMessage) is used to send message to specific client;
+      io.to(recieveSocketId).emit("getMessage", newMessage);
+    }
+
     res.status(201).json(newMessage);
   } catch (error) {
     console.log(`Error in sendMessage controller ${error.message}`);
